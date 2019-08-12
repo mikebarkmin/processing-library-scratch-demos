@@ -24,11 +24,13 @@ void play() {
   // platform below player
   platforms.add(new Platform(width / 2, height - 10));
 
-  int neededPlatforms = Math.round(height / player.JUMP_HEIGHT) + 4;
+  int neededPlatforms = Math.round(height / player.JUMP_HEIGHT);
   int numberOfPlatforms = Math.round(neededPlatforms + random(5));
-  for (int i = 0; i < numberOfPlatforms - 1; i++) {
+  for (int i = 0; i < numberOfPlatforms; i++) {
     if (neededPlatforms > 0) {
-      platforms.add(new Platform(random(60, width - 60), height - i*player.JUMP_HEIGHT - random(5)));
+      float y = constrain(height - i*player.JUMP_HEIGHT - random(5), 40, height - 40);
+      float x = random(60, width - 60);
+      platforms.add(new Platform(x, y));
       neededPlatforms--;
     } else {
       platforms.add(new Platform(random(60, width - 60), random(20, height - 20)));
@@ -56,7 +58,14 @@ void generateEnemies() {
       enemy = new Bernd();
       break;
     }
-    enemy.setPosition(random(60, width - 60), random(60, height - 60));
+    float x = random(60, width - 60);
+    float y = random(60, height - 60);
+    
+    while(x > player.getX() - player.getWidth() && x < player.getX() + player.getWidth()) {
+      x = random(60, width - 60);
+    }
+    enemy.setPosition(x, y);
+    
     enemies.add(enemy);
   }
 }

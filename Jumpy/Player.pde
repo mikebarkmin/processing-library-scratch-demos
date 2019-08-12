@@ -99,7 +99,6 @@ class Player extends Character {
     if (state != PlayerState.JUMP) {
       for(Platform platform : platforms) {
         if (platform.isTouchingSprite(platformHit)) {
-          println("HIT");
           velocityY = 0;
           state = PlayerState.IDLE;
           this.setY(platform.getY() - 20);
