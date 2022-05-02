@@ -1,28 +1,34 @@
 import processing.sound.*;
 import eu.barkmin.processing.scratch.*;
 
-ArrayList<Enemy> enemies;
-ArrayList<Platform> platforms;
 Player player;
+ScratchStage stage;
 
 int level;
 
 void setup() {
   size(800, 1000, P2D);
   ScratchStage.init(this);
+  stage = ScratchStage.getInstance();
+  player = new Player();
+  stage.addSprite(player);
 
   play();
 }
 
 void play() {
   level = 1;
-  player = new Player();
   player.setPosition(width / 2, height - 40);
 
-  platforms = new ArrayList();
+  generatePlatforms();
+  generateEnemies();
+}
+
+void generatePlatforms() {
 
   // platform below player
-  platforms.add(new Platform(width / 2, height - 10));
+  stage.removeSprites(Platform.class);
+  stage.addSprite(new Platform(width / 2, height - 10));
 
   int neededPlatforms = Math.round(height / player.JUMP_HEIGHT);
   int numberOfPlatforms = Math.round(neededPlatforms + random(5));
@@ -30,20 +36,17 @@ void play() {
     if (neededPlatforms > 0) {
       float y = constrain(height - i*player.JUMP_HEIGHT - random(5), 40, height - 40);
       float x = random(60, width - 60);
-      platforms.add(new Platform(x, y));
+      stage.addSprite(new Platform(x, y));
       neededPlatforms--;
     } else {
-      platforms.add(new Platform(random(60, width - 60), random(20, height - 20)));
+      stage.addSprite(new Platform(random(60, width - 60), random(20, height - 20)));
     }
   }
-
-  generateEnemies();
 }
 
 
 void generateEnemies() {
-  enemies = new ArrayList();
-
+  stage.removeSprites(Enemy.class);
   for (int i = 0; i < level; i++) {
     int e = Math.round(random(0, 3));
     Enemy enemy = null;
@@ -66,7 +69,7 @@ void generateEnemies() {
     }
     enemy.setPosition(x, y);
     
-    enemies.add(enemy);
+    stage.addSprite(enemy);
   }
 }
 
@@ -77,15 +80,7 @@ void keyPressed() {
 }
 
 void draw() {
-  for (Platform platform : platforms) {
-    platform.draw();
-  }
-  for (Enemy enemy : enemies) {
-    enemy.draw();
-  }
-  player.draw();
-
-  if (enemies.size() == 0) {
+  if (stage.findSprites(Enemy.class).size() == 0) {
     level++;
     generateEnemies();
   }

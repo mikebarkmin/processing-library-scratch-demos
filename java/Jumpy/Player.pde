@@ -4,7 +4,7 @@ enum PlayerState {
   IDLE, JUMP, FALL, DEAD
 }
  
-class Player extends Character {
+class Player extends ScratchAnimatedSprite {
   
   final float FRICTION = 0.99;
   final float GRAVITY = 0.5;
@@ -21,7 +21,8 @@ class Player extends Character {
   ScratchSprite platformHit;
     
   Player() {
-    super("assets/player_%d.png", 2);
+    this.addAnimation("default", "assets/player_%d.png", 2);
+    this.setAnimationInterval(300);
     
     platformHit = new ScratchSprite("platform", "assets/player_hitbox.png");
     
@@ -70,9 +71,9 @@ class Player extends Character {
       state = PlayerState.JUMP;
   }
   
-  void draw() {
-    super.draw();
-    
+  void run() {
+    this.playAnimation("default");
+   
     if(state == PlayerState.DEAD) {
       velocityY += -GRAVITY;
       setTint(255);
@@ -95,9 +96,12 @@ class Player extends Character {
     platformHit.setPosition(this.getX(), this.getY());
     platformHit.draw();
     
+   ScratchStage stage = ScratchStage.getInstance();
+    
     // collesion detection
     if (state != PlayerState.JUMP) {
-      for(Platform platform : platforms) {
+      for(ScratchSprite s : stage.findSprites(Platform.class)) {
+        Platform platform = (Platform) s;
         if (platform.isTouchingSprite(platformHit)) {
           velocityY = 0;
           state = PlayerState.IDLE;
@@ -108,15 +112,13 @@ class Player extends Character {
     }
     
     // collision detection with enemy
-    Iterator<Enemy> itr = enemies.iterator();
-    while(itr.hasNext()) {
-      Enemy enemy = itr.next();
-      if(enemy.isTouchingSprite(platformHit)) {
-        itr.remove();
+    for(ScratchSprite s : stage.findSprites(Enemy.class)) {
+      if(s.isTouchingSprite(platformHit)) {
+        stage.removeSprite(s);
         velocityY = 0;
         state = PlayerState.IDLE;
         jump();
-      } else if(enemy.isTouchingSprite(this)) {
+      } else if(s.isTouchingSprite(this)) {
         state = PlayerState.DEAD;
       }
     }

@@ -13,8 +13,8 @@ class Frank extends Enemy {
     super("frank");
   }
   
-  void draw() {
-    super.draw();
+  void run() {
+    super.run();
     if (currentDistance >= distance) {
       back = true;
     } else if (currentDistance <= -distance) {

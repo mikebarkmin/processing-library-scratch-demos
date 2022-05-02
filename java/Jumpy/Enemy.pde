@@ -1,5 +1,9 @@
-class Enemy extends Character {
+class Enemy extends ScratchAnimatedSprite {
   Enemy(String name) {
-    super("assets/" + name + "_%d.png", 2);
+    this.addAnimation("default", "assets/" + name + "_%1d.png", 2);
+  }
+  
+  void run() {
+    this.playAnimation("default");
   }
 }

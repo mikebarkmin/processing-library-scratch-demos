@@ -13,8 +13,8 @@ class Daisy extends Enemy {
     super("daisy");
   }
 
-  void draw() {
-    super.draw();
+  void run() {
+    super.run();
     if (currentDistance >= distance) {
       up = true;
     } else if (currentDistance <= -distance) {

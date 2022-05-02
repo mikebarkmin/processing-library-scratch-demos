@@ -11,8 +11,8 @@ class Bernd extends Enemy {
     super("bernd");
   }
   
-  void draw() {
-    super.draw();
+  void run() {
+    super.run();
     if (this.getTimer().everyMillis(1000)) {
       scaled = !scaled;
     }
